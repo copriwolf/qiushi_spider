@@ -20,6 +20,8 @@ class QSBK:
         self.stories = []
         self.pagestory = []
         self.Enable = True
+        self.text = []
+        self.file = None
 
     def LoadPage(self, page):
         try:
@@ -46,34 +48,41 @@ class QSBK:
         for item in items:
             haveImg = re.search("img", item[2])
             if not haveImg:
-                self.pagestory.append([item[0].strip(), item[1].strip(), item[3].strip()])
-               
+                self.pagestory.append(
+                    [item[0].strip(), item[1].strip(), item[3].strip()])
 
     def LoadEachItem(self):
-    	print "+------------------------------+"
-        print u"第%s页\t作者:%s\n%s\n点赞数:%s" % (self.page, self.pagestory[0][0], self.pagestory[0][1], self.pagestory[0][2])
+        self.text = u"第%s页\t作者:%s\n%s\n点赞数:%s" % (
+            self.page, self.pagestory[0][0], self.pagestory[0][1], self.pagestory[0][2])
+        print "+------------------------------+"
+        print self.text
         print "+------------------------------+"
         del self.pagestory[0]
-
 
     def Loading2Start(self):
         self.LoadPage(self.page)
         self.GetPageItem(self.page)
         while self.Enable == True:
-        	if not self.pagestory:
-        	    self.page += 1
-        	    self.GetPageItem(self.page)
-        	    self.LoadEachItem()
-        	else:
-        		self.LoadEachItem()
+            if not self.pagestory:
+                self.page += 1
+                self.GetPageItem(self.page)
+                self.LoadEachItem()
+            else:
+                self.LoadEachItem()
 
-        	input = raw_input('输入任意键阅读下一条，退出请输入\"Q\":')
-        	if input == "Q":
-        	    self.Enable = False
-        	    return 
+            input = raw_input('输入任意键阅读下一条,保存请输入\"S\",退出请输入\"Q\":')
+            if input == "Q":
+                self.Enable = False
+                return
+
+            if input == "S":
+                self.file = open('QSBK.txt', 'w+')
+                self.file.writelines(self.text)
+                print '\n'
+                print '+---------------------------------------------+'
+                print '+该段子已保存在本程序目录下的\'QSBK.txt\'文件中!+'
+                print '+---------------------------------------------+'
+                print '\n'
 
 spider = QSBK()
 spider.Loading2Start()
-
-
-        	
